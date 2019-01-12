@@ -1,0 +1,15 @@
+{
+	"update-servers":[
+		"",
+		""
+	],
+	"update-channels":[
+		"",
+		""
+	],
+	"test-channel":"",
+	"test-server":"",
+	"admin-id":"",
+	"self-id":"",
+	"token":""
+}
