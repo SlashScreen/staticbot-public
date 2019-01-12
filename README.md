@@ -3,7 +3,7 @@ Floraverse Companion bot
 Hello! I am SlashScreen, and I enjoy the webcomic [Floraverse](https://floraverse.com/).
 
 
-I noticed that there was an RSS feed that I could access on the website. So, I set about making a python script that could read the RSS feed and thell me if there were updates. And then I made a discord bot that can push a message to a server if there was an update.
+I noticed that there was an RSS feed that I could access on the website. So, I set about making a python script that could read the RSS feed and thell me if there were updates. And then I made a discord bot that can push a message to a server if there was an update. And then I made it search the website for whatever query I wanted in 10 seconds or less.
 
 
 USE:
