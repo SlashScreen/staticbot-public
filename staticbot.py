@@ -1,3 +1,5 @@
+##CREATED BY SLASHSCREEN. WWW.SLASHSCREEN.COM
+
 import discord
 import asyncio
 import rssfeed as rss
@@ -7,6 +9,7 @@ import random
 import florasearch as fs
 import credreader as cr
 
+#Get Credentials
 creds = cr.read()
 client = discord.Client()
 adminid = creds["admin-id"]
@@ -25,7 +28,7 @@ def constructDate(date):
     return out
 
 #STATIC STATS
-def getSystemInfo():
+def getSystemInfo(): #Gets system info
     servmem = psutil.virtual_memory()
     p = psutil.Process()
     procmem = p.memory_info()
@@ -34,7 +37,7 @@ def getSystemInfo():
     return info
 
 #FREQUENCY
-async def changeFrequency(client):
+async def changeFrequency(client): #Changes radio frequency in listening to presence for asthetics
     random.seed()
     frequency = round(random.uniform(76.1,1710.0),1)
     fgame = discord.Game(name = "frequency {f} khz".format(f=frequency),type=2)
@@ -44,8 +47,8 @@ async def changeFrequency(client):
 async def sendUpdate(client,channelid,serverid,falsemessage = True, save = True,inchannel = None):
     channel = None
     if inchannel == None:
-        server = client.get_server(str(serverid)) #flora server id
-        channel = server.get_channel(str(channelid))
+        server = client.get_server(str(serverid)) #server
+        channel = server.get_channel(str(channelid)) #channel
         
     else:
         channel = inchannel
@@ -80,8 +83,8 @@ async def announce(m,client,sid,chid):
     await client.send_message(channel,"```json\nANNOUNCEMENT PARSED. RELAYING PACKAGE.\n-----\n{msg}\n-----\nRELAY SUCCESSFUL. RESUMING NORMAL BEHAVIOR.```".format(msg=args[2]))
 
 async def getServerStuff(client):
-    server = client.get_server(creds["test-server"]) #lamestown server id
-    channel = server.get_channel(creds["test-channel"]) #bottestinggrounds
+    server = client.get_server(creds["test-server"]) #Test server
+    channel = server.get_channel(creds["test-channel"]) #test channel
     c_lst = client.get_all_channels()
     for c in c_lst:
         await client.send_message(channel,str(c)+":"+c.id)
@@ -105,11 +108,9 @@ async def on_ready():
 ''')
     print('------')
     while True:
-        #Change status and check for update
         await asyncio.sleep(60)
         for i in creds["update-servers"]:
             for f in creds["update-channels"]:
-                #print("server",i,"channel",f)
                 await sendUpdate(client,f,i,falsemessage = False)
         await changeFrequency(client)
 
