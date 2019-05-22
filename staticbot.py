@@ -1,5 +1,3 @@
-##CREATED BY SLASHSCREEN. WWW.SLASHSCREEN.COM
-
 import discord
 import asyncio
 import rssfeed as rss
@@ -9,10 +7,11 @@ import random
 import florasearch as fs
 import credreader as cr
 
-#Get Credentials
 creds = cr.read()
 client = discord.Client()
 adminid = creds["admin-id"]
+
+#I barely remember how this works sorry 
 
 #GET CLIENT
 def getClient():
@@ -28,7 +27,7 @@ def constructDate(date):
     return out
 
 #STATIC STATS
-def getSystemInfo(): #Gets system info
+def getSystemInfo():
     servmem = psutil.virtual_memory()
     p = psutil.Process()
     procmem = p.memory_info()
@@ -37,7 +36,7 @@ def getSystemInfo(): #Gets system info
     return info
 
 #FREQUENCY
-async def changeFrequency(client): #Changes radio frequency in listening to presence for asthetics
+async def changeFrequency(client):
     random.seed()
     frequency = round(random.uniform(76.1,1710.0),1)
     fgame = discord.Game(name = "frequency {f} khz".format(f=frequency),type=2)
@@ -47,12 +46,12 @@ async def changeFrequency(client): #Changes radio frequency in listening to pres
 async def sendUpdate(client,channelid,serverid,falsemessage = True, save = True,inchannel = None):
     channel = None
     if inchannel == None:
-        server = client.get_server(str(serverid)) #server
-        channel = server.get_channel(str(channelid)) #channel
+        server = client.get_server(str(serverid)) #flora server id
+        channel = server.get_channel(str(channelid))
         
     else:
         channel = inchannel
-    needsupdating = rss.setup(save)
+    needsupdating = rss.setup(save) #setup rss
     outlist = rss.readOne()
     if not needsupdating:
         print(server,channel)
@@ -71,8 +70,8 @@ async def sendUpdate(client,channelid,serverid,falsemessage = True, save = True,
 #ANNOUNCE
 async def announce(m,client,sid,chid):
     args = m.split(' ',2)
-    server = client.get_server(sid) #flora server id
-    channel = server.get_channel(chid) #flora-updates
+    server = client.get_server(sid) 
+    channel = server.get_channel(chid) 
     if channel == None:
         return
     print(server,channel)
@@ -82,9 +81,9 @@ async def announce(m,client,sid,chid):
     await asyncio.sleep(1)
     await client.send_message(channel,"```json\nANNOUNCEMENT PARSED. RELAYING PACKAGE.\n-----\n{msg}\n-----\nRELAY SUCCESSFUL. RESUMING NORMAL BEHAVIOR.```".format(msg=args[2]))
 
-async def getServerStuff(client):
-    server = client.get_server(creds["test-server"]) #Test server
-    channel = server.get_channel(creds["test-channel"]) #test channel
+async def getServerStuff(client): #Reads creds
+    server = client.get_server(creds["test-server"])
+    channel = server.get_channel(creds["test-channel"]) 
     c_lst = client.get_all_channels()
     for c in c_lst:
         await client.send_message(channel,str(c)+":"+c.id)
@@ -108,9 +107,11 @@ async def on_ready():
 ''')
     print('------')
     while True:
+        #Change status and check for update
         await asyncio.sleep(60)
         for i in creds["update-servers"]:
             for f in creds["update-channels"]:
+                #print("server",i,"channel",f)
                 await sendUpdate(client,f,i,falsemessage = False)
         await changeFrequency(client)
 
@@ -119,30 +120,30 @@ async def parseCommands(client,msg,isMe,message):
     admin = await client.get_user_info(adminid)
     adminname = admin.name
     if isMe:
-        if "stop" in msg:
+        if "stop" in msg: #Admin- quit
             quit();
-        elif "ping" in msg:
+        elif "ping" in msg: #Admin- ping
             await client.send_message(message.channel,"```pong.```")
         elif "stats" in msg:
             await client.send_message(message.channel,getSystemInfo())
-        elif "announce" in msg:
+        elif "announce" in msg: #Announcement- admin only
             for i in creds["update-servers"]:
                 for f in creds["update-channels"]:
                     await announce(msg,client,i,f)
             await client.send_message(message.channel,"I HAVE SEEN TO IT PERSONALLY THAT YOU MESSAGE GETS THROUGH.")
         elif "getstuff" in msg:
             await getServerStuff(client)
-        elif "help" in msg:
+        elif "help" in msg: #get help link
             await client.send_message(message.channel, "```LOWERING VOLUME. go to http://slashscreen.com/code/bots/static/statichelp.html.```")
-        elif "update" in msg:
+        elif "update" in msg: #get update
             print(message.server)
             await sendUpdate(client,message.channel.id,message.server,save = False,inchannel = message.channel)
-        elif "search" in msg:
+        elif "search" in msg: #static search
             await client.send_message(message.channel, "```json\nraising volume. SEARCHING FOR GIVEN QUERY. PLEASE BE PATIENT, AS IT MAY TAKE SOME TIME.```")
             res = fs.supersearch(msg)
             await client.send_message(message.channel, res)
         else:
-            await client.send_message(message.channel,"```...```")
+            await client.send_message(message.channel,"```...```") #...
     else:
         
         if "stop" in msg:
@@ -170,14 +171,14 @@ async def parseCommands(client,msg,isMe,message):
 @client.event
 async def on_message(message):
     msg = message.content.lower()
-    if not message.author.id == creds["self-id"]:
+    if not message.author.id == creds["self-id"]: #self-id is the bot ID so it doesn't respond to itself. that was a huge problem
         if "static " in msg:
-            if message.author.id == adminid:
-                await parseCommands(client,msg,True,message)
+            if message.author.id == adminid: #If admin
+                await parseCommands(client,msg,True,message) #Parse as admin
             else:
-                await parseCommands(client,msg,False,message)
+                await parseCommands(client,msg,False,message) #parse as citizen
         if msg == "static":
-            await client.send_message(message.channel,"```...```")
+            await client.send_message(message.channel,"```...```") #this is the ... thing static does
 
 #SET UP           
 def setup():

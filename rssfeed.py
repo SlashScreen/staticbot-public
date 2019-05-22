@@ -8,7 +8,8 @@ import os
 feeds = []
 cwd = os.path.realpath(os.path.join(os.getcwd(),os.path.dirname(__file__)))
 def findFile(name):
-   return os.path.join(cwd,name) 
+   return os.path.join(cwd,name)
+   #Does windows/linux paths 
 
 def readSubscriptions():
     path = Path(findFile("subscriptions.txt"))
@@ -16,7 +17,7 @@ def readSubscriptions():
     
     if not path.is_file():
         print("ERROR: Subscription file not found!")
-        #quit()
+        #quit if no cache.txt file
 
     f = open(findFile("subscriptions.txt"))
     file = f.read().splitlines()
@@ -45,39 +46,36 @@ def readOne():
             outlist[article_title]['link'] = article_link
             outlist[article_title]['title'] = article_title
             outlist[article_title]['date'] = article_date
-            #print (out)
+            #Parses rss feed
         except:
             raise ConnectionError 
     return outlist
 
 def compareCache():
+    #Compares links from rss feed and cache, to try to see if any are "unread"
     upToDate = True
     path = Path(findFile("cache.txt"))
     file = []
     f =  open(findFile("cache.txt"))
     file = f.read().splitlines()
-        
-        #print(file)
     NewFeeds = readOne()
     i = 0
     for article,entry in NewFeeds.items():
-        #print(file)
         if file == []:
             upToDate = False
             break
-        #print (feed)
         if i > len(file)-1:
             break
-        #print(i)
         line = file[i]
         if not line == entry["link"]:
-            #print (entry["link"])
-            #print (line)
             upToDate = False
         i += 1
     return upToDate
 
 def saveCache():
+    #saves links to cache file- cache.txt
+    print("Saving Cache Data...")
+    #print(feeds[0]).href
     f = open(findFile("cache.txt"), 'r+')
     f.truncate(0)
     f.close()
@@ -85,7 +83,10 @@ def saveCache():
     #for feed in feeds:
     links = []
     for entry in feeds[0].entries:
+        #print(entry.link)
         links.append(entry.link)
+        #print(links)
+    print(links[0])
     f.write(str(links[0])+"\n")
     f.close()
 

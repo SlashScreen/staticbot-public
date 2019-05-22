@@ -1,15 +1,15 @@
 {
 	"update-servers":[
-		"",
-		""
+		"431822072604524549",
+		"376850205850468354"
 	],
 	"update-channels":[
-		"",
-		""
+		"506000838523748373",
+		"524085549770735646"
 	],
-	"test-channel":"",
-	"test-server":"",
-	"admin-id":"",
-	"self-id":"",
-	"token":""
+	"test-channel":"430547010349826060",
+	"test-server":"376850205850468354",
+	"admin-id":"199046815847415818",
+	"self-id":"505963477894955008",
+	"token":"NTA1OTYzNDc3ODk0OTU1MDA4.DrbO5A.ZVwnELAbJLa197XGM1SNKpSfNU0"
 }
